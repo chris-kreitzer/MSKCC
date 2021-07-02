@@ -1,1 +1,10 @@
-#!/bin/bash
+## First, `snp-pileup` was used to get count matrices for respective .bam files (see excel sheet for sample paths)
+
+#' example run:
+I used the following vcf file (see below); stored locally
+Parameters used for snp-pileup based on recommondation of Ahmet Zehir
+
+`snp-pileup -v -A -q15 -Q20 -r10 -g /juno/home/kreitzec/Data/dbsnp_137.hg19__RmDupsClean__plusPseudo50__DROP_SORT.vcf.gz <output-folder> <normal.bam> <tumor.bam>`
+
+#' I simply submitted this job via 
+`bash <filename>`; since bsub was not working in batch mode
