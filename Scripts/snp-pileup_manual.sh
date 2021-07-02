@@ -1,3 +1,5 @@
+#! /bin/bash/
+
 ## First, `snp-pileup` was used to get count matrices for respective .bam files (see excel sheet for sample paths)
 
 #' example run:
