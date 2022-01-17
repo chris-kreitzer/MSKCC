@@ -6,7 +6,8 @@ example script, where annotate-maf-wrapper.R is located in `${HOME}`
 * `Rscript /juno/home/kreitzec/annotate-maf-wrapper.R -m /juno/work/schultz/subhi/mafs_for_mafAnno/F12-6-p1--F12-blood.union.v4.annotated.maf -f /juno/work/subhi/Ingo_WES_Facets/s_F12-6-p1.gz.Rdata -o /juno/work/schultz/subhi/F12-6-p1_annotated.txt`
 
 
-## Data access various formats and important links (MSK related); VPN required
+## Data access various formats and important links (MSK related); VPN required    
+[MSK-knowledgeSystems](https://github.mskcc.org/)  access only via VPN   
 [Delphi-Sample-Tracker](https://delphi.mskcc.org/sample-tracker/home)   
 [High Performance Computing](http://mskcchpc.org/) Questions related to juno and server access   
 [CVR Molecular Diagnostic service](https://cvr.mskcc.org:8083/search) - open @Chrome: mskcc Christoph    
