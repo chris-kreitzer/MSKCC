@@ -7,6 +7,9 @@ example script, where annotate-maf-wrapper.R is located in `${HOME}`
 
 
 ## Data access various formats and important links (MSK related); VPN required
-[Delphi-Sample-Tracker](https://delphi.mskcc.org/sample-tracker/home)
-[CVR-Seq.Resources](http://cvr.mskcc.org/) - gene panels and respective baits targeting selected exon/introns
-[DMP-2022]() #' daily annotated seq files (hosted via DMP)
+[Delphi-Sample-Tracker](https://delphi.mskcc.org/sample-tracker/home)   
+[High Performance Computing](http://mskcchpc.org/) Questions related to juno and server access   
+[CVR Molecular Diagnostic service](https://cvr.mskcc.org:8083/search) - open @Chrome: mskcc Christoph    
+[DMP-2022 DMP Data Directory](https://github.mskcc.org/knowledgesystems/dmp-2022) #' Page 404 not found / need to login @Enterprise (msk initials)    
+[OncoKB annotated Mutations](https://github.mskcc.org/knowledgesystems/oncokb-annotated-msk-impact) daily updates with OncoKB annotations / need login as well    
+[Darwin](https://ddp.mskcc.org/search) Clinical Interpretation tool; all clinical data associated with tumor specimen; specifically pathology and radiology events and treatment data.   
