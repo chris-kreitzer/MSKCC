@@ -62,7 +62,7 @@ ggplot(PIK, aes(x = t_var_freq, color = type, fill = type)) +
         legend.position = c(0.85, 0.8))
 
 #' Are PIK3R1 clonality estimates independent of PTEN and PIK3CA
-GOI = c('PTEN', 'PIK3R1', 'PIK3CA', 'MTOR')
+GOI = c('PTEN', 'PIK3R1', 'PIK3CA')
 
 ccf_prostate_GOI = ccf_prostate[which(ccf_prostate$Hugo_Symbol %in% GOI), ]
 co_table = as.matrix(t(xtabs(~ccf_prostate_GOI$Hugo_Symbol + ccf_prostate_GOI$clonality,
@@ -152,4 +152,117 @@ BT.MLE.model = ggplot(plot.in,
   labs(x = '', y = '', title = paste0(cancer_type, ' (n=', cancer_type_sample_size, ')'))
 
 BT.MLE.model
+
+
+
+## Question 2: Focality of PIK3R1 alteration:
+#' Are these PIK3R1 losses specific or always in the context of wider 5q deletions? 
+#' How often are these homozygous vs mono allelic losses? 
+#' How often do they co-occur with PTEN/PIK3CA alterations?
+
+gene_call = read.csv('msk_impact_facets_annotated.gene_level.txt.gz', sep = '\t')
+gene_call$sample = substr(gene_call$sample, start = 1, stop = 17)
+genes_prostate = gene_call[which(gene_call$sample %in% ccf_prostate$Tumor_Sample_Barcode), ]
+genes_prostate_goi = genes_prostate[which(genes_prostate$gene %in% GOI), ]  
+genes_prostate_goi = genes_prostate_goi[, c('sample', 'gene', 'chrom', 'seg_start', 'seg_end', 'cn_state')]
+genes_prostate_goi$length = genes_prostate_goi$seg_end - genes_prostate_goi$seg_start
+
+#' every sample should contain 3 calls (for every gene)
+ii = which(table(genes_prostate_goi$sample) != 3)
+genes_prostate_goi = genes_prostate_goi[!genes_prostate_goi$sample %in% names(ii), ]
+
+
+#' Assess the focality based on arm-length
+chromo_arm = data.frame(target = c('PIK3CA', 'PIK3R1', 'PTEN'),
+                        chromosome = c(3, 5, 10),
+                        chromo.arm = c('3q', '5q', '10q'),
+                        start = c(90504854, 46405641, 39254935),
+                        end = c(198022430, 180915260, 135534747))
+chromo_arm$length = chromo_arm$end - chromo_arm$start
+
+
+gene_out = data.frame()
+for(i in 1:nrow(genes_prostate_goi)){
+  if(genes_prostate_goi$length[i] >= chromo_arm$length[which(chromo_arm$target == genes_prostate_goi$gene[i])]){
+    out = data.frame(target = genes_prostate_goi$gene[i],
+                     breadth = paste0('>', chromo_arm$chromo.arm[which(chromo_arm$target == genes_prostate_goi$gene[i])]),
+                     call = genes_prostate_goi$cn_state[i],
+                     sample = genes_prostate_goi$sample[i])
+  } else {
+    out = data.frame(target = genes_prostate_goi$gene[i],
+                     breadth = paste0(genes_prostate_goi$length[i] / chromo_arm$length[which(chromo_arm$target == genes_prostate_goi$gene[i])], '%'),
+                     call = genes_prostate_goi$cn_state[i],
+                     sample = genes_prostate_goi$sample[i])
+  }
+  gene_out = rbind(gene_out, out)
+}
+
+
+## PIK3R1 alteration:
+#' Amplification
+amp_state = c('AMP', 
+              'GAIN', 
+              'CNLOH AFTER', 
+              'LOSS & GAIN', 
+              'LOSS AFTER')
+
+#' Het_category
+het_state = c('CNLOH', 
+              'CNLOH & GAIN', 
+              'CNLOH BEFORE', 
+              'CNLOH BEFORE & LOSS', 
+              'HETLOSS',
+              'LOSS BEFORE',
+              'LOSS BEFORE & AFTER')
+
+#' unspecified
+unspecified = c('AMP (many states)', 
+                'DIPLOID or CNLOH', 
+                'GAIN (many states)', 
+                'INDETERMINATE', 
+                'LOSS (many states)',
+                'LOSS BEFORE or DOUBLE LOSS AFTER',
+                'TETRAPLOID or CNLOH BEFORE')
+
+homo_state = c('HOMDEL', 'DOUBLE LOSS AFTER')
+
+
+## PIK3R1:
+PIK3R1 = gene_out[which(gene_out$target == 'PIK3R1'), ]
+PIK3R1 = PIK3R1[which(PIK3R1$call %in% homo_state | 
+                        PIK3R1$call %in% het_state), ]
+
+PIK_vec = c()
+for(i in 1:nrow(PIK3R1)){
+  if(substr(x = PIK3R1$breadth[i], 
+            start = nchar(PIK3R1$breadth[i]), 
+            stop = nchar(PIK3R1$breadth[i])) == '%'){
+    val = round(as.numeric(substr(PIK3R1$breadth[i], start = 1, stop = 15)), 4)
+    
+  } else next
+  PIK_vec = c(PIK_vec, val)
+}
+
+PIK_vec = PIK_vec[!is.na(PIK_vec)]
+
+#' comparison with others:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
