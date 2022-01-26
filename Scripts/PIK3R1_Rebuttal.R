@@ -243,19 +243,103 @@ for(i in 1:nrow(PIK3R1)){
   PIK_vec = c(PIK_vec, val)
 }
 
-PIK_vec = PIK_vec[!is.na(PIK_vec)]
+## PIK3CA:
+PIK3CA = gene_out[which(gene_out$target == 'PIK3CA'), ]
+PIK3CA = PIK3CA[which(PIK3CA$call %in% homo_state | 
+                        PIK3CA$call %in% het_state), ]
 
-#' comparison with others:
+PIK3CA_vec = c()
+for(i in 1:nrow(PIK3CA)){
+  if(substr(x = PIK3CA$breadth[i], 
+            start = nchar(PIK3CA$breadth[i]), 
+            stop = nchar(PIK3CA$breadth[i])) == '%'){
+    val = round(as.numeric(substr(PIK3CA$breadth[i], start = 1, stop = 15)), 4)
+    
+  } else next
+  PIK3CA_vec = c(PIK3CA_vec, val)
+}
+
+
+## PTEN:
+PTEN = gene_out[which(gene_out$target == 'PTEN'), ]
+PTEN = PTEN[which(PTEN$call %in% homo_state | 
+                        PTEN$call %in% het_state), ]
+
+PTEN_vec = c()
+for(i in 1:nrow(PTEN)){
+  if(substr(x = PTEN$breadth[i], 
+            start = nchar(PTEN$breadth[i]), 
+            stop = nchar(PTEN$breadth[i])) == '%'){
+    val = round(as.numeric(substr(PTEN$breadth[i], start = 1, stop = 15)), 4)
+    
+  } else next
+  PTEN_vec = c(PTEN_vec, val)
+}
+
+
+## Are PIK3R1 deletions focal?
+PIK_comp = data.frame(target = 'PIK3R1',
+                      category = c('<25%', '25-50%', '50-75%', '>75%'),
+                      value = c(length(PIK_vec[which(PIK_vec <= 0.25)]),
+                                length(PIK_vec[which(PIK_vec > 0.25 & PIK_vec <= 0.5)]),
+                                length(PIK_vec[which(PIK_vec > 0.5 & PIK_vec <= 0.75)]),
+                                length(PIK_vec[which(PIK_vec > 0.75)])))
+
+#' number > 5q
+PIK_comp$value[which(PIK_comp$category == '>75%')] = PIK_comp$value[which(PIK_comp$category == '>75%')] + length(grep('^>.', x = PIK3R1$breadth))
+PIK_comp$category = factor(PIK_comp$category, levels = c('>75%', '50-75%', '25-50%', '<25%'))
+colours = RColorBrewer::brewer.pal(n = 4, name = 'Blues')
+
+ggplot(PIK_comp, aes(x = target, y = value, fill = category)) +
+  geom_bar(stat = 'identity', position = 'fill', width = 0.3) +
+  scale_fill_manual(values = colours, name = '% of 5q') +
+  coord_flip() +
+  theme_classic() +
+  theme(axis.line.y = element_blank(),
+        axis.title.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  scale_y_continuous(expand = c(0, 0)) +
+  labs(x = 'Fraction', title = 'PIK3R1 losses (segment length) relative to 5q length')
+
+
+ggplot(as.data.frame(PIK_vec), aes(x = PIK_vec)) +
+  geom_density(alpha = 0.2, size = 1.1) +
+  labs(x = 'Fraction of 5q arm', y = 'density') +
+  scale_y_continuous(expand = c(0, 0.01), limits = c(0, 2)) +
+  scale_x_continuous(expand = c(0, 0.01), limits = c(0, 1)) +
+  theme_classic() +
+  theme(axis.line.y = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        axis.text.x = element_text(size = 12, face = 'bold', color = 'black'),
+        axis.title.x = element_text(size = 14),
+        axis.title.y = element_text(size = 14),
+        panel.border = element_rect(colour = "black", fill = NA, size = 2),
+        legend.position = c(0.85, 0.8))
 
 
 
+## Co-occurrence with PTEN
+co = gene_out[which(gene_out$call %in% homo_state | 
+             gene_out$call %in% het_state), ]
 
+co_all = data.frame()
+for(i in unique(co$sample)){
+  da = co[which(co$sample == i), ]
+  if(nrow(da) == 1) next
+  else if(nrow(da) > 1 & 'PIK3R1' %in% da$target) {
+    a_targets = as.character(da$target)
+    a_targets = a_targets[!a_targets %in% 'PIK3R1']
+    o = data.frame(gene1 = 'PIK3R1',
+                   gene2 = a_targets,
+                   id = i)
+  }
+  co_all = rbind(co_all, o)
+}
 
-
-
-
-
-
+co_all %>%
+  group_by(gene1, gene2) %>%
+  summarize(count = n())
 
 
 
