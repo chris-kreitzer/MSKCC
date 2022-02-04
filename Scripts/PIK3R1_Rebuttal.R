@@ -343,9 +343,22 @@ co_all %>%
 
 
 
+## Why did so many samples fail FacetsQC?
+facetsTRUE = read.csv('Data/facets_qc_TRUE.txt', sep = '\t')
+facetsTRUE$sample_id = substr(facetsTRUE$sample_id, start = 1, stop = 17)
+cohort = read.csv('Data/60bfa9dfe4b0f0abac8b43f5_clinical_data.tsv', sep = '\t')
+facetsALL = read.csv('../05_IMPACT40K/Data/Signed_out/Facets_annotated.cohort.txt', sep = '\t')
+facetsALL$sample_id = substr(facetsALL$sample_id, start = 1, stop = 17)
 
+QC_Fail = cohort[!cohort$Sample.ID %in% facetsTRUE$sample_id, ]
+QC_Fail_full = facetsALL[which(facetsALL$sample_id %in% QC_Fail$Sample.ID), ]
+QC_Fail_full = QC_Fail_full[,-c(2:42)]
+QC_Fail_full = QC_Fail_full[,-c(74:ncol(QC_Fail_full))]
 
-
+for(i in 60:ncol(QC_Fail_full)){
+  print(names(QC_Fail_full[i])); 
+  print(table(QC_Fail_full[, i]))
+}
 
 
 
