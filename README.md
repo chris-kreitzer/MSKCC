@@ -80,7 +80,7 @@ e.g. cigar of 100M: indicates that the read starts at 1002 and is mapped continu
 Note that still there might be mismatches. Suppose your cigar was 20M 1D 20M 60N 30M 1I 20M 100N 9M => read length = sum of all M/I/S operations. 
 There is no S here. So, read length = 20+20+30+1+20+9=100. Suppose your read started at 1002, then, let's see how the read is for this cigar string.
 
-https://user-images.githubusercontent.com/58993468/154679668-5ad990ec-36e6-43a1-a9bf-f403be00ecfe.png
+![CIGAR](https://user-images.githubusercontent.com/58993468/154679668-5ad990ec-36e6-43a1-a9bf-f403be00ecfe.png)
 
 #### Examples (https://wikis.utexas.edu/display/CoreNGSTools/Filtering+with+SAMTools)
 Count reads that mappedi with indels   
