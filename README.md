@@ -14,3 +14,9 @@ example script, where annotate-maf-wrapper.R is located in `${HOME}`
 [DMP-2022 DMP Data Directory](https://github.mskcc.org/knowledgesystems/dmp-2022) #' Page 404 not found / need to login @Enterprise (msk initials)    
 [OncoKB annotated Mutations](https://github.mskcc.org/knowledgesystems/oncokb-annotated-msk-impact) daily updates with OncoKB annotations / need login as well    
 [Darwin](https://ddp.mskcc.org/search) Clinical Interpretation tool; all clinical data associated with tumor specimen; specifically pathology and radiology events and treatment data.   
+
+
+## Survival analysis; be cautions about left-truncation and length bias
+Read this handy [article](https://towardsdatascience.com/how-well-do-you-really-know-survival-analysis-221885b89a8e#:~:text=Left%20truncation%20occurs%20when%20data,study)    
+Use this [Github](https://github.com/slb2240/delayed_entry_clin_genom_studies/blob/main/crc_stage_iv_os_dx.R) for R   
+And some other useful [publication](https://pubmed.ncbi.nlm.nih.gov/34734967/)   
