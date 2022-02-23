@@ -94,5 +94,27 @@ Count reads that mappedi with indels
 `samtools view -c -F 0x4 yeast_pe.sort.bam chrII`
 
 ##### count the number of reads mapped to chromosomes 1 that overlap coordinates 1000-2000
-`samtools view -c -F 0x4 yeast_pe.sort.bam chrI:1000-2000`
+`samtools view -c -F 0x4 yeast_pe.sort.bam chrI:1000-2000`   
+ 
+#### counting only mapped (primary aligned) reads
+`samtools view -c -F 260 SAMPLE.bam` [-F 260 (excludes unmapped and secondary alignments)]      
+ 
+options   
+  -c  count reads and print the total number
 
+  -f bitcode  output reads that fulfill the checked 'bitcode' criteria, see SAM bitcode fields
+
+  -F bitcode  exclude reads that match one or more checked 'bitcode' criteria, see SAM bitcode fields
+
+  -F 260  output primary aligned mapped reads (no secondary alignments included)
+  
+## Sequencing coverage and breadth of coverage   
+Sequencing coverage or depth (coverage and depth are used interchangeably) determines the number of times sequenced nucleotide bases covered the target genome. For example, if genome size is 100 Mbp and you have sequenced 5 M reads of 100 bp size, then sequencing coverage at genome level would be 5X. 
+  
+#### get read depth for each position on chromosome [use -a parameter to get read depth for all positions]  
+samtools depth PC14_L001_R1.bam > read_depth.txt
+
+#### get overall read depth
+awk '{sum+=$3;} END {print sum/NR;}' read_depth.txt
+- $3 means read depth at each position of chromosome (third column from read_depth.txt)
+- NR means total rows in read_depth.txt [total mapped chromosome size (with -a option, you will get whole chromosome size)]
