@@ -110,7 +110,11 @@ options
   
 ## Sequencing coverage and breadth of coverage   
 Sequencing coverage or depth (coverage and depth are used interchangeably) determines the number of times sequenced nucleotide bases covered the target genome. For example, if genome size is 100 Mbp and you have sequenced 5 M reads of 100 bp size, then sequencing coverage at genome level would be 5X. 
+
   
+### Median insert size
+samtools stats DE840153-T.bam |grep ^SN | cut -f 2-
+
 #### get read depth for each position on chromosome [use -a parameter to get read depth for all positions]  
 samtools depth PC14_L001_R1.bam > read_depth.txt
 
