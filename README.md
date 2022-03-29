@@ -124,7 +124,7 @@ awk '{sum+=$3;} END {print sum/NR;}' read_depth.txt
 - NR means total rows in read_depth.txt [total mapped chromosome size (with -a option, you will get whole chromosome size)]   
   
 #### IMPORTANT TOOLs:
-MutationPhaser (https://github.com/reznik-lab/MutationPhaser/blob/master/R/func.R)
-ASCAT.sc (https://github.com/VanLoo-lab/ASCAT.sc) 
+MutationPhaser (https://github.com/reznik-lab/MutationPhaser/blob/master/R/func.R)   
+ASCAT.sc (https://github.com/VanLoo-lab/ASCAT.sc)   
 TcellExtract (https://github.com/McGranahanLab/TcellExTRECT)   
   
