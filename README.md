@@ -123,8 +123,10 @@ awk '{sum+=$3;} END {print sum/NR;}' read_depth.txt
 - $3 means read depth at each position of chromosome (third column from read_depth.txt)
 - NR means total rows in read_depth.txt [total mapped chromosome size (with -a option, you will get whole chromosome size)]   
   
-#### IMPORTANT TOOLs:
+#### IMPORTANT Bioinformatic TOOLs:
 MutationPhaser (https://github.com/reznik-lab/MutationPhaser/blob/master/R/func.R)   
 ASCAT.sc (https://github.com/VanLoo-lab/ASCAT.sc)   
 TcellExtract (https://github.com/McGranahanLab/TcellExTRECT)   
+refphase (ASCAT tutorial): mirrored subclonal imbalance: https://bitbucket.org/schwarzlab/refphase/src/master/   
+ 
   
