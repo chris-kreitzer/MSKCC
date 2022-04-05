@@ -226,9 +226,9 @@ get_variant_barcodes <- function(tmp,ref_genome,max_reference_region,partner=1,r
   }
 }
 
-
-
-
+out$ref_barcodes
+out$error
+View(out$dat)
 
 
 
