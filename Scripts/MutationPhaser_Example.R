@@ -1,9 +1,17 @@
 ##-----------------------------------------------------------------------------
 ## MutationPhaser()
+## https://github.com/reznik-lab/MutationPhaser
+## 
 ## Test whether two mutations are on the same allele (cis) or opposite (trans)
 ## 04/05/2022
 ## chris-kreitzer
 
+
+## Dependencies
+#' install.packages('bedr')
+#' install.packages('Hmisc')
+
+# install.packages('~/Documents/MSKCC/MutationPhaser/', repos = NULL, type = 'source')
 
 clean()
 
