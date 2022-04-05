@@ -47,6 +47,16 @@ x = MutationPhaser::phase(maf_file = '~/Documents/MSKCC/dmp-2021/maf.test.txt',
 
 ##-----------------------------------------------------------------------------
 ## Manually extract aligned read at BRCA2 locus
+## Example: P-0015132-T01-IM6
+## Germline BRCA2 Inseration at exon 11 and somatic sample
+
+#' first find composite mutations
+x = MutationPhaser::phase(maf_file = '~/Documents/MSKCC/dmp-2021/maf.test.txt', 
+                          map_file = '~/Documents/MSKCC/dmp-2021/bam.test.txt', 
+                          ref_genome = '~/Documents/MSKCC/dmp-2021/Genomics/gr37.fasta',
+                          max_reference_region = 1e4,
+                          cpus = 4)
+
 
 partner = 1
 x = MutationPhaser::phase() #' see above
@@ -54,74 +64,98 @@ tmp = x[1, ]
 tmp$bam = '~/Documents/MSKCC/dmp-2021/BAMs/P-0015132-T01-IM6/JH330573-T.bam'
 
 
+## get fields for the relevant composite mutation partner
+start_field = paste('Start_Position', partner, sep ='.')
+end_field = paste('End_Position', partner, sep = '.')
+ref_field <- paste('Reference_Allele',partner,sep='.')
+alt_field <- paste('Tumor_Seq_Allele2',partner,sep='.')
+type_field <- paste('Variant_Type',partner,sep='.')
+    
+## bam file for sample
+variant_start = tmp[[start_field]]             
+ref_allele = tmp[[ref_field]]
+alt_allele = tmp[[alt_field]]
+variant_type = tmp[[type_field]]
+    
+## path to bam 
+bamfile = BamFile(tmp$bam)
+    
+## what param: fields we want from the bam-file
+what = scanBamWhat()
+    
+## which param: regions for this composite_mutation as GRangesList
+regions = tmp[, c('Chromosome', start_field, end_field), with = F]
+names(regions) = c('chr', 'start', 'end')
+regions$start = regions$start
+regions$end = regions$end
+which = makeGRangesFromDataFrame(regions)
+    
+## flag param: samtools flags to use when extracting reads
+flags = scanBamFlag(isNotPassingQualityControls = F, 
+                    isDuplicate = F)
 
+## combine into params object; load the bam; create 'dat' with the relevant data
+right_padding = max(c(nchar(ref_allele), nchar(alt_allele)))
+if(is.na(right_padding)) right_padding = 0
+what = c("qname", "seq", "pos", "cigar", "qwidth", "rname", "mrnm", "mpos", "mate_status") # "rname","qwidth","qual")
+param = ScanBamParam(which = which, 
+                     mapqFilter = 10, 
+                     flag = flags, 
+                     what = what)
 
-get_variant_barcodes <- function(tmp,ref_genome,max_reference_region,partner=1,return_barcodes=F) { 
-  out <- tryCatch({            
-    
-    ## get fields for the relevant composite mutation partner
-    start_field <- paste('Start_Position',partner,sep='.')
-    end_field <- paste('End_Position',partner,sep='.')
-    ref_field <- paste('Reference_Allele',partner,sep='.')
-    alt_field <- paste('Tumor_Seq_Allele2',partner,sep='.')
-    type_field <- paste('Variant_Type',partner,sep='.')
-    
-    ## bam file for sample
-    
-    variant_start <- tmp[[start_field]]             
-    ref_allele <- tmp[[ref_field]]
-    alt_allele <- tmp[[alt_field]]
-    variant_type <- tmp[[type_field]]
-    
-    ## path to bam 
-    bamfile <- BamFile(tmp$bam)
-    
-    ## what param: fields we wamt from the bam
-    what <- scanBamWhat()
-    
-    ## which param: regions for this composite_mutation as GRangesList
-    regions <- tmp[, c('Chromosome', start_field,end_field), with=F]
-    names(regions) <- c('chr','start','end')
-    regions$start <- regions$start
-    regions$end <- regions$end
-    which <- makeGRangesFromDataFrame(regions)
-    
-    ## flag param: samtools flags to use when extracting reads
-    flags <- scanBamFlag( isNotPassingQualityControls=F, isDuplicate=F)
-    
-    ## combine into params object; load the bam; create 'dat' with the relevant data
-    right_padding <- max(c(nchar(ref_allele),nchar(alt_allele)))
-    if(is.na(right_padding)) right_padding <- 0
-    what <- c("qname","seq","pos","cigar","qwidth","rname","mrnm","mpos","mate_status") #"rname","qwidth","qual")
-    param <- ScanBamParam(which=which, mapqFilter=10, flag=flags, what=what)
-    bam <- scanBam(bamfile, param=param)[[1]]        
-    region <- paste0(tmp$Chromosome,':',min(bam$pos),'-',max(bam$pos+width(bam$seq)+right_padding))
-    bp_spanned_in_region <- abs(max(bam$pos+width(bam$seq)+right_padding) - min(bam$pos))
-    
-    if(variant_type!='Fusion' & bp_spanned_in_region <= max_reference_region) {
-      invisible(capture.output(seq <- get.fasta(x=region,fasta=ref_genome,check.chr=F,verbose=F)$sequence))
-      #message('using cdna for p53!'); seq <- readRDS('~/lab/projects/composite_mutations/data/processed_data/figure5/tcga/p53_cdna.fa.rds')
-      dat <- data.table(qname=bam$qname,pos=bam$pos,seq=as.character(bam$seq),cigar=bam$cigar,qwidth=bam$qwidth,
-                        rname=bam$rname,mpos=bam$mpos,mrnm=as.character(bam$mrnm))
-      
-      ## get reference sequence for each alignment's SEQ
-      fullrefs <- rep(as.character(seq),nrow(dat))
-      dat$ref_start <- dat$pos-min(dat$pos)+1
-      dat$ref_end <- dat$ref_start + bam$qwidth - 1 + right_padding
-      dat$ref <- substr(fullrefs,dat$ref_start,dat$ref_end)                       
-      
-      ## re-align the sequence of each alignment to the reference sequence for its respective genomic region
-      alignments <- recnw(dat$seq,dat$ref,gap_penalty=8,match=5,mismatch=-4,free_hgap_1=T,free_hgap_2=T,free_tgap_1=F,free_tgap_2=F) ## recnw.cpp 
-      alignments <- rbindlist(lapply(alignments,function(s) {as.list(strsplit(s,'[|]')[[1]])}))
-      names(alignments) <- c('seq1','seq2','score')
-    } else if(variant_type!='Fusion' & bp_spanned_in_region > max_reference_region) {
-      stop(paste0('Region spanned by SAM alignments exceeds maximum expected (',max_reference_region,'bp)'))
-      
-    } else if(variant_type=='Fusion'){ 
+bam = scanBam(bamfile, 
+              param = param)[[1]]        
+
+region = paste0(tmp$Chromosome, ':', min(bam$pos), '-', max(bam$pos + width(bam$seq) + right_padding))
+bp_spanned_in_region = abs(max(bam$pos + width(bam$seq) + right_padding) - min(bam$pos))
+
+#' input: max gap and ref genome
+max_reference_region = 1e4
+ref_genome = '~/Documents/MSKCC/dmp-2021/Genomics/gr37.fasta'
+
+if(variant_type != 'Fusion' & bp_spanned_in_region <= max_reference_region) {
+  invisible(capture.output(seq = get.fasta(x = region,
+                                           fasta = ref_genome,
+                                           check.chr = F,
+                                           verbose = F)$sequence))
+  
+  dat = data.table(qname = bam$qname,
+                   pos = bam$pos,
+                   seq = as.character(bam$seq),
+                   cigar = bam$cigar,
+                   qwidth = bam$qwidth,
+                   rname = bam$rname,
+                   mpos = bam$mpos,
+                   mrnm = as.character(bam$mrnm))
+  
+  ## get reference sequence for each alignment's SEQ
+  fullrefs = rep(as.character(seq), nrow(dat))
+  dat$ref_start = dat$pos - min(dat$pos) + 1
+  dat$ref_end = dat$ref_start + bam$qwidth - 1 + right_padding
+  dat$ref = substr(fullrefs, dat$ref_start, dat$ref_end)                       
+  
+  ## re-align the sequence of each alignment to the reference sequence for its respective genomic region
+  alignments = recnw(dat$seq,
+                     dat$ref,
+                     gap_penalty = 8,
+                     match = 5,
+                     mismatch = -4,
+                     free_hgap_1 = T,
+                     free_hgap_2 = T,
+                     free_tgap_1 = F,
+                     free_tgap_2 = F) ## recnw.cpp 
+  
+  alignments = rbindlist(lapply(alignments,function(s) {as.list(strsplit(s,'[|]')[[1]])}))
+  names(alignments) = c('seq1','seq2','score')
+  
+  } else if(variant_type != 'Fusion' & bp_spanned_in_region > max_reference_region) {
+    stop(paste0('Region spanned by SAM alignments exceeds maximum expected (',max_reference_region,'bp)'))
+    } else if(variant_type == 'Fusion'){ 
       ## don't query the reference sequence for fusions, just focus on where the SAM alignments map to
       dat <- data.table(qname=bam$qname,pos=bam$pos,seq=as.character(bam$seq),cigar=bam$cigar,qwidth=bam$qwidth,
                         rname=bam$rname,mpos=bam$mpos,mrnm=as.character(bam$mrnm))
     }
+
     
     if(variant_type=='DEL') {
       ## Say read has the alternate (deleted) allele if:
