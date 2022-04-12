@@ -8,54 +8,13 @@
 
 clean()
 
-## Dependencies
-#' install.packages('bedr')
-#' install.packages('Hmisc')
-
-# install.packages('~/Documents/MSKCC/MutationPhaser/', repos = NULL, type = 'source')
 library(MutationPhaser)
-
-
-
-#' working on one example: P-0015132-T01-IM6 
-#' look whether BRCA2 Germline and BRCA2 somatic alteration occur on the same allele or not (cis VS trans)  
-MAF = mutations_PRAD[which(mutations_PRAD$Tumor_Sample_Barcode == 'P-0015132-T01-IM6'), ]
-MAF = MAF[, c('Tumor_Sample_Barcode', 'Hugo_Symbol', 'Chromosome', 'Start_Position', 
-              'End_Position', 'Variant_Classification', 'Variant_Type', 'Reference_Allele', 'Tumor_Seq_Allele2')]
-MAF = as.data.table(MAF)
-write.table(MAF, 
-            file = '~/Documents/MSKCC/dmp-2021/maf.test.txt', 
-            sep = '\t', quote = F, row.names = F)
-
-#' BAM MAP
-BAM_MAP = data.table(Tumor_Sample_Barcode = 'P-0015132-T01-IM6',
-                     bam = '~/Documents/MSKCC/dmp-2021/BAMs/P-0015132-T01-IM6/JH330573-T.bam')
-
-write.table(BAM_MAP, file = '~/Documents/MSKCC/dmp-2021/bam.test.txt', sep = '\t', row.names = F)
-
-
-#' phasing
-x = MutationPhaser::phase(maf_file = '~/Documents/MSKCC/dmp-2021/maf.test.txt', 
-                      map_file = '~/Documents/MSKCC/dmp-2021/bam.test.txt', 
-                      ref_genome = '~/Documents/MSKCC/dmp-2021/Genomics/gr37.fasta',
-                      max_reference_region = 1e4,
-                      cpus = 4)
-
-
-
 
 
 ##-----------------------------------------------------------------------------
 ## Manually extract aligned read at BRCA2 locus
 ## Example: P-0015132-T01-IM6
 ## Germline BRCA2 Inseration at exon 11 and somatic sample
-
-#' first find composite mutations
-x = MutationPhaser::phase(maf_file = '~/Documents/MSKCC/dmp-2021/maf.test.txt', 
-                          map_file = '~/Documents/MSKCC/dmp-2021/bam.test.txt', 
-                          ref_genome = '~/Documents/MSKCC/dmp-2021/Genomics/gr37.fasta',
-                          max_reference_region = 1e4,
-                          cpus = 4)
 
 
 partner = 1
@@ -157,7 +116,7 @@ if(variant_type != 'Fusion' & bp_spanned_in_region <= max_reference_region) {
     }
 
     
-    if(variant_type=='DEL') {
+    if(variant_type == 'DEL') {
       ## Say read has the alternate (deleted) allele if:
       ##  - the alignment returns a deletion at the appropriate locus
       ##  - AND the cigar for the read described a deletion
@@ -247,24 +206,15 @@ if(variant_type != 'Fusion' & bp_spanned_in_region <= max_reference_region) {
     alt_barcodes <- dat$qname[dat$call==alt_allele]
     list(ref_barcodes=ref_barcodes,alt_barcodes=alt_barcodes,error='',dat=dat)
     
-  }, error=function(e) {
-    ref_barcodes <- as.character(NA)
-    alt_barcodes <- as.character(NA)
-    list(ref_barcodes=ref_barcodes,alt_barcodes=alt_barcodes,error=as.character(e),dat='foo')
-  })        
+  }
   
   if(return_barcodes==F) {
     list(ref_barcodes=out$ref_barcodes,alt_barcodes=out$alt_barcodes,error=out$error)
   } else {
     out$dat  
   }
-}
 
-out$ref_barcodes
-out$error
-View(out$dat)
-
-
+out$dat
 
 
 
