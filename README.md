@@ -14,7 +14,7 @@ example script, where annotate-maf-wrapper.R is located in `${HOME}`
 [DMP-2022 DMP Data Directory](https://github.mskcc.org/knowledgesystems/dmp-2022) #' Page 404 not found / need to login @Enterprise (msk initials)    
 [OncoKB annotated Mutations](https://github.mskcc.org/knowledgesystems/oncokb-annotated-msk-impact) daily updates with OncoKB annotations / need login as well    
 [Darwin](https://ddp.mskcc.org/search) Clinical Interpretation tool; all clinical data associated with tumor specimen; specifically pathology and radiology events and treatment data.  
-[TCGA_SCNA]('/juno/work/ccs/tcga_facets/')
+[TCGA_SCNA] (/juno/work/ccs/tcga_facets/)   
 
 
 ## Survival analysis; be cautions about left-truncation and length bias
