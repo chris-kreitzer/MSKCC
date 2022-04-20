@@ -1,3 +1,6 @@
+### Script fetched from B. Arman Aksoy; https://arman.aksoy.org
+
+
 # This function sorts the matrix for better visualization of mutual exclusivity across genes
 memoSort <- function(M) {
 	geneOrder <- sort(rowSums(M), decreasing=TRUE, index.return=TRUE)$ix;
