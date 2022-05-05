@@ -58,6 +58,8 @@ The region on chr2 beginning at base position 1,000,000 and ending at the end of
 Importantly. If we are running `snp-pileup -v -A -g <vcf> <normal> <tumor.bam>` with no specified filters
 (e.g. read quality etc.) we exactly get the raw alignment counts as displayed in IGV (see P-0014995 bam / IGV / countmatrix_unfiltered)
 Moreover, we only get read count information on those positions which are provided in the vcf file supplied (so not every base postion is covered from the IGV). Facets uses the VCF file `/juno/work/ci/resources/genomes/GRCh37/facets_snps/dbsnp_137.b37__RmDupsClean__plusPseudo50__DROP_SORT.vcf` to assess the counts at specfic loci.   
+![image](https://user-images.githubusercontent.com/58993468/166894021-8f51a751-c07b-48eb-8639-51be064c184c.png)
+
   
 
 
