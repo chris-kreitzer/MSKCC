@@ -135,6 +135,10 @@ TcellExtract (https://github.com/McGranahanLab/TcellExTRECT)
 refphase (ASCAT tutorial): mirrored subclonal imbalance: https://bitbucket.org/schwarzlab/refphase/src/master/   
 GeneticAnnotations: https://atlasgeneticsoncology.org/teaching/30067/nomenclature-for-the-description-of-mutations-and-other-sequence-variations   
 Genome Nexus (Ino): https://www.genomenexus.org/    
+  
+PingID (enrollment): new device:  https://thespot.mskcc.org/esc/?id=kb_article&sys_id=bc010b9d1b0bf0d006ec0e94604bcb2f&table=kb_knowledge
+  
+You must be connected via VPN
 
  
 
