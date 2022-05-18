@@ -139,7 +139,7 @@ Genome Nexus (Ino): https://www.genomenexus.org/
 PingID (enrollment): new device:  https://thespot.mskcc.org/esc/?id=kb_article&sys_id=bc010b9d1b0bf0d006ec0e94604bcb2f&table=kb_knowledge
 You must be connected via VPN
 
-Test example to have green button!
+Test example to have green button! not allowed
 
   
   
