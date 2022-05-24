@@ -139,13 +139,6 @@ Genome Nexus (Ino): https://www.genomenexus.org/
 PingID (enrollment): new device:  https://thespot.mskcc.org/esc/?id=kb_article&sys_id=bc010b9d1b0bf0d006ec0e94604bcb2f&table=kb_knowledge
 You must be connected via VPN
 
-Test example to have green button! not allowed   
-  Another test example
-
+Mobile Enrollment (The Spot): https://thespot.mskcc.org/esc?id=sc_request&is_new_order=true&table=sc_request&sys_id=3b47906b1beb89100ffa53d1604bcbf6
+Open tickets are start a new chat: https://thespot.mskcc.org/esc?id=my_requests&filter=tickets
   
-  
-  another test
-  
-  last!
-  
-
