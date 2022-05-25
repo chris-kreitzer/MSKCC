@@ -141,4 +141,6 @@ You must be connected via VPN
 
 Mobile Enrollment (The Spot): https://thespot.mskcc.org/esc?id=sc_request&is_new_order=true&table=sc_request&sys_id=3b47906b1beb89100ffa53d1604bcbf6
 Open tickets are start a new chat: https://thespot.mskcc.org/esc?id=my_requests&filter=tickets
-  
+
+EZmobile enrollment: https://outlook.office.com/mail/inbox/id/AAQkADA1ZjBlOWQ4LTMxNmEtNDEyNC05N2JiLTk5MjQxYzJiMzkyMgAQAGUsEsGcwWBMh1qx2Hje0Fk%3D?popoutv2=1&version=20210329003.04
+Specific token delivered
