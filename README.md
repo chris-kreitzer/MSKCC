@@ -147,3 +147,7 @@ Specific token delivered
 
  PCA: https://www.cell.com/action/showPdf?pii=S0002-9297%2812%2900417-X
   Applied: https://currentprotocols.onlinelibrary.wiley.com/doi/epdf/10.1002/0471142905.hg0723s81?saml_referrer
+  
+  
+ExomeCopy: https://bioconductor.org/packages/release/bioc/vignettes/exomeCopy/inst/doc/exomeCopy.pdf
+Correlation of PCA components with its input variables: https://stats.stackexchange.com/questions/253718/correlation-between-an-original-variable-and-a-principal-component
