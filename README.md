@@ -151,3 +151,5 @@ Specific token delivered
   
 ExomeCopy: https://bioconductor.org/packages/release/bioc/vignettes/exomeCopy/inst/doc/exomeCopy.pdf
 Correlation of PCA components with its input variables: https://stats.stackexchange.com/questions/253718/correlation-between-an-original-variable-and-a-principal-component
+  
+  Benchmark!
