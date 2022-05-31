@@ -153,3 +153,6 @@ ExomeCopy: https://bioconductor.org/packages/release/bioc/vignettes/exomeCopy/in
 Correlation of PCA components with its input variables: https://stats.stackexchange.com/questions/253718/correlation-between-an-original-variable-and-a-principal-component
   
   Benchmark!
+  
+PureCN: https://github.com/lima1/PureCN
+  
