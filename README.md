@@ -134,9 +134,27 @@ ASCAT.sc (https://github.com/VanLoo-lab/ASCAT.sc)
 TcellExtract (https://github.com/McGranahanLab/TcellExTRECT)   
 refphase (ASCAT tutorial): mirrored subclonal imbalance: https://bitbucket.org/schwarzlab/refphase/src/master/   
 GeneticAnnotations: https://atlasgeneticsoncology.org/teaching/30067/nomenclature-for-the-description-of-mutations-and-other-sequence-variations   
-Genome Nexus (Ino): https://www.genomenexus.org/  
- 
+Genome Nexus (Ino): https://www.genomenexus.org/    
+  
+PingID (enrollment): new device:  https://thespot.mskcc.org/esc/?id=kb_article&sys_id=bc010b9d1b0bf0d006ec0e94604bcb2f&table=kb_knowledge
+You must be connected via VPN
 
+Mobile Enrollment (The Spot): https://thespot.mskcc.org/esc?id=sc_request&is_new_order=true&table=sc_request&sys_id=3b47906b1beb89100ffa53d1604bcbf6
+Open tickets are start a new chat: https://thespot.mskcc.org/esc?id=my_requests&filter=tickets
+
+EZmobile enrollment: https://outlook.office.com/mail/inbox/id/AAQkADA1ZjBlOWQ4LTMxNmEtNDEyNC05N2JiLTk5MjQxYzJiMzkyMgAQAGUsEsGcwWBMh1qx2Hje0Fk%3D?popoutv2=1&version=20210329003.04
+Specific token delivered
+
+ PCA: https://www.cell.com/action/showPdf?pii=S0002-9297%2812%2900417-X
+  Applied: https://currentprotocols.onlinelibrary.wiley.com/doi/epdf/10.1002/0471142905.hg0723s81?saml_referrer
   
   
-
+ExomeCopy: https://bioconductor.org/packages/release/bioc/vignettes/exomeCopy/inst/doc/exomeCopy.pdf
+Correlation of PCA components with its input variables: https://stats.stackexchange.com/questions/253718/correlation-between-an-original-variable-and-a-principal-component
+  
+  Benchmark!
+  
+PureCN: https://github.com/lima1/PureCN
+CNVtools: https://bioinformaticshome.com/tools/cnv/cnv.html
+  
+  
