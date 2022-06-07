@@ -156,5 +156,6 @@ Correlation of PCA components with its input variables: https://stats.stackexcha
   
 PureCN: https://github.com/lima1/PureCN
 CNVtools: https://bioinformaticshome.com/tools/cnv/cnv.html
+HATCHET: https://www.nature.com/articles/s41467-020-17967-y.pdf
   
   
