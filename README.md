@@ -16,7 +16,7 @@ example script, where annotate-maf-wrapper.R is located in `${HOME}`
 [OncoKB annotated Mutations](https://github.mskcc.org/knowledgesystems/oncokb-annotated-msk-impact) daily updates with OncoKB annotations / need login as well    
 [Darwin](https://ddp.mskcc.org/search) Clinical Interpretation tool; all clinical data associated with tumor specimen; specifically pathology and radiology events and treatment data.  
 [TCGA_SCNA] (/juno/work/ccs/tcga_facets/)   
-[Interactive Juno-Session] (https://juno-interact01.mskcc.org/)   
+[Interactive Juno-Session](https://juno-interact01.mskcc.org/)   
 
 
 ## Survival analysis; be cautions about left-truncation and length bias
