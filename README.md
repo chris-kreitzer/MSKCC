@@ -17,6 +17,7 @@ example script, where annotate-maf-wrapper.R is located in `${HOME}`
 [Darwin](https://ddp.mskcc.org/search) Clinical Interpretation tool; all clinical data associated with tumor specimen; specifically pathology and radiology events and treatment data.  
 [TCGA_SCNA] (/juno/work/ccs/tcga_facets/)   
 [Interactive Juno-Session](https://juno-interact01.mskcc.org/)   
+[MSK-Workday](https://ssofed.mskcc.org/idp/startSSO.ping?PartnerSpId=http%3A%2F%2Fwww.workday.com%2Fmsk)   
 
 
 ## Survival analysis; be cautions about left-truncation and length bias
