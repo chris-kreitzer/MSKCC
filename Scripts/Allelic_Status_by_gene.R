@@ -1,0 +1,159 @@
+##----------------+
+## Allelic-status for
+## arbitrary genes
+##----------------+
+
+## start: 11/08/2022
+## chris-kreitzer
+
+allelic_status = function(samples = NULL,
+                          gene = NULL,
+                          copy_number_data = NULL,
+                          mutation_data = NULL,
+                          cna_filter = c('PASS', 'RESCUE')){
+  
+  message('\nPlease provide samples as characters (e.g. c(, , ))\n
+          Please provide gene as single string (e.g. TP53)\n
+          Please provide mutation in OncoKB-annotated format\n
+          Please provide CNAs from Facets and at the GENE-LEVEL')
+  
+  gene_summary_out = data.frame()
+  samples = as.character(samples)
+  mutations = mutation_data[which(mutation_data$Tumor_Sample_Barcode %in% samples), ]
+  cna_sample_match = sapply(unique(copy_number_data$sample),
+                            function(x) if (grepl(paste(samples, collapse = '|'),  x, ignore.case = TRUE)) {"Present"} else {"Absent"})
+  cna_sample_names = names(cna_sample_match)[which(cna_sample_match == 'Present')]
+  cna_s = copy_number_data[which(copy_number_data$sample %in% cna_sample_names), ]
+  
+  #---------------+
+  # concentrate GOI
+  #---------------+
+  if(!is.null(gene)){
+    gene = gene
+    mutation_goi = mutations[which(mutations$Hugo_Symbol == gene), ]
+    cna_goi = cna_s[which(cna_s$gene == gene), ]
+    cna_goi$sample = substr(cna_goi$sample, start = 1, stop = 17)
+  } else {
+    return(list(mutations = mutations,
+                cna = cna_s))
+  }
+  
+  #---------------+
+  # loop through samples
+  #---------------+
+  for(i in unique(samples)){
+    try({
+      if(i %in% mutation_goi$Tumor_Sample_Barcode){
+        muts = mutation_goi[which(mutation_goi$Tumor_Sample_Barcode == i), ]
+        
+        #' single; or multiple mutations?
+        mutation_specific = paste0(gene, ';', muts$HGVSp)
+        mutation_specific_p = ifelse(length(mutation_specific) > 1, 
+                                   paste(mutation_specific, collapse = '|'), mutation_specific)
+        
+        #' Germline or Somatic
+        mutation_status = muts$Mutation_Status
+        mutation_status = ifelse(length(mutation_status) > 1, 
+                                 paste(mutation_status, collapse = ';'), mutation_status)
+        
+        #' oncogenicity?
+        mutation_effect = muts$ONCOGENIC
+        mutation_effect = ifelse(length(mutation_effect) > 1, 
+                                 paste(mutation_effect, collapse = ';'), mutation_effect)
+        
+        #' cis-trans mutations?
+        composite_mutation = ifelse(length(mutation_specific) > 1, 'check: cis/trans mutations?', 'no')
+        
+      } else {
+        mutation_specific_p = 'none'
+        mutation_status = NA
+        mutation_effect = NA
+        composite_mutation = NA
+      }
+      
+      #-------------+
+      # CNA data
+      #-------------+
+      if(i %in% cna_goi$sample){
+        cna = cna_goi[which(cna_goi$sample == i), ]
+        tcn = cna$tcn
+        lcn = cna$lcn
+        cn_state = cna$cn_state
+        filter = cna$filter
+      } else {
+        tcn = NA
+        lcn = NA
+        cn_state = NA
+        filter = NA
+      }
+      
+      #-------------+
+      # gather info and return
+      #-------------+
+      out = data.frame(id = i,
+                       gene = gene,
+                       mutation = mutation_specific_p,
+                       status = mutation_status,
+                       effect = mutation_effect,
+                       composite = composite_mutation,
+                       tcn = tcn,
+                       lcn = lcn,
+                       cn_state = cn_state,
+                       filter = filter)
+      gene_summary_out = rbind(gene_summary_out, out)
+    })
+  }
+  
+  #---------------+
+  # Allelic-status
+  #---------------+
+  gene_summary_out$allelic_call= NA
+  gene_summary_out = gene_summary_out[order(gene_summary_out$tcn, decreasing = T), ]
+  
+  for(id in 1:nrow(gene_summary_out)){
+    if(gene_summary_out$filter[id] %in% cna_filter){
+      a_call = ifelse(gene_summary_out$tcn[id] > 1 &
+                      gene_summary_out$lcn[id] != 0 &
+                      gene_summary_out$mutation[id] == 'none', gene_summary_out$cn_state[id],
+                      
+                      ifelse(gene_summary_out$tcn[id] > 1 &
+                               gene_summary_out$lcn[id] != 0 &
+                               gene_summary_out$mutation[id] != 'none', 'check: expected_alt_copies',
+                             
+                             ifelse(gene_summary_out$tcn[id] > 1 &
+                                      gene_summary_out$lcn[id] == 0 | is.na(gene_summary_out$lcn[id]) &
+                                      gene_summary_out$mutation[id] == 'none', 'monoallelic',
+                                    
+                                    ifelse(gene_summary_out$tcn[id] > 1 &
+                                             gene_summary_out$lcn[id] == 0 | is.na(gene_summary_out$lcn[id]) &
+                                             gene_summary_out$mutation[id] != 'none', 'check: expected_alt_copies',
+                                           
+                                           ifelse(gene_summary_out$tcn[id] == 1 & gene_summary_out$lcn[id] == 0 | is.na(gene_summary_out$lcn[id]) &
+                                                                  gene_summary_out$mutation[id] == 'none', 'monoallelic',
+                                                  
+                                                  ifelse(gene_summary_out$tcn[id] == 1 & gene_summary_out$lcn[id] == 0 | is.na(gene_summary_out$lcn[id]) &
+                                                           gene_summary_out$mutation[id] != 'none', 'biallelic',
+                                                         
+                                                         ifelse(gene_summary_out$tcn[id] == 0 & gene_summary_out$lcn[id] == 0 | is.na(gene_summary_out$lcn[id]), 
+                                                                'biallelic', 'ambiguous')))))))
+    } else {
+      a_call = 'N/P. Check Facets fits'
+    }
+    gene_summary_out$allelic_call[id] = a_call
+  }
+  
+  return(gene_summary_out)
+  
+}
+
+View(gene_summary_out)
+x = allelic_status(samples = sa, copy_number_data = cna_facets, mutation_data = mutation_maf, gene = 'B2M')
+
+cna_filter = c("PASS", 'RESCUE')
+gene_summary_out = x[,1:10]
+gene_summary_out = gene_summary_out[order(gene_summary_out$tcn, decreasing = T), ]
+gene_summary_out$allelic_call = NA
+
+
+
+#' allelic-status out
