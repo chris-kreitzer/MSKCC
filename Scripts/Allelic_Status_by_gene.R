@@ -4,6 +4,7 @@
 ##----------------+
 
 ## start: 11/08/2022
+## revision: 11/10/2022
 ## chris-kreitzer
 
 allelic_status = function(samples = NULL,
@@ -93,6 +94,7 @@ allelic_status = function(samples = NULL,
       out = data.frame(id = i,
                        gene = gene,
                        mutation = mutation_specific_p,
+                       n_mutations = ifelse(mutation_specific_p == 'none', 0, nrow(muts)),
                        status = mutation_status,
                        effect = mutation_effect,
                        composite = composite_mutation,
@@ -103,57 +105,119 @@ allelic_status = function(samples = NULL,
       gene_summary_out = rbind(gene_summary_out, out)
     })
   }
-  
+
   #---------------+
   # Allelic-status
   #---------------+
-  gene_summary_out$allelic_call= NA
+  gene_summary_out$cna_AI = NA
+  gene_summary_out$cna_AI_n = NA
   gene_summary_out = gene_summary_out[order(gene_summary_out$tcn, decreasing = T), ]
   
-  for(id in 1:nrow(gene_summary_out)){
-    if(gene_summary_out$filter[id] %in% cna_filter){
-      a_call = ifelse(gene_summary_out$tcn[id] > 1 &
-                      gene_summary_out$lcn[id] != 0 &
-                      gene_summary_out$mutation[id] == 'none', gene_summary_out$cn_state[id],
-                      
-                      ifelse(gene_summary_out$tcn[id] > 1 &
-                               gene_summary_out$lcn[id] != 0 &
-                               gene_summary_out$mutation[id] != 'none', 'check: expected_alt_copies',
-                             
-                             ifelse(gene_summary_out$tcn[id] > 1 &
-                                      gene_summary_out$lcn[id] == 0 | is.na(gene_summary_out$lcn[id]) &
-                                      gene_summary_out$mutation[id] == 'none', 'monoallelic',
-                                    
-                                    ifelse(gene_summary_out$tcn[id] > 1 &
-                                             gene_summary_out$lcn[id] == 0 | is.na(gene_summary_out$lcn[id]) &
-                                             gene_summary_out$mutation[id] != 'none', 'check: expected_alt_copies',
-                                           
-                                           ifelse(gene_summary_out$tcn[id] == 1 & gene_summary_out$lcn[id] == 0 | is.na(gene_summary_out$lcn[id]) &
-                                                                  gene_summary_out$mutation[id] == 'none', 'monoallelic',
-                                                  
-                                                  ifelse(gene_summary_out$tcn[id] == 1 & gene_summary_out$lcn[id] == 0 | is.na(gene_summary_out$lcn[id]) &
-                                                           gene_summary_out$mutation[id] != 'none', 'biallelic',
-                                                         
-                                                         ifelse(gene_summary_out$tcn[id] == 0 & gene_summary_out$lcn[id] == 0 | is.na(gene_summary_out$lcn[id]), 
-                                                                'biallelic', 'ambiguous')))))))
-    } else {
-      a_call = 'N/P. Check Facets fits'
-    }
-    gene_summary_out$allelic_call[id] = a_call
+  #---------------+
+  # Criteria(s)
+  #---------------+
+  
+  # CNA balanced
+  cna_balanced = function(data){
+    tcn = data[1]
+    lcn = data[2]
+    # arguments
+    arg1 = all(!is.na(tcn) & !is.na(lcn))
+    arg2 = all(tcn > 0 & !is.na(lcn) & lcn != 0 & abs(diff(c(tcn, lcn))) %in% c(1,2,3))
+    return(c(arg1, arg2))
   }
   
-  return(gene_summary_out)
+  args_cna = apply(gene_summary_out[, c('tcn', 'lcn')], 1, cna_balanced)
+  args_short = apply(args_cna, 2, all)
   
+  for(i in seq_along(args_short)){
+    if(args_short[i]){
+      gene_summary_out$cna_AI[i] = 'balanced'
+      gene_summary_out$cna_AI_n[i] = 0
+    } else {
+      tcn = gene_summary_out$tcn[i]
+      tcn = ifelse(is.na(tcn) | tcn == 0, 0, tcn)
+      lcn = gene_summary_out$lcn[i]
+      lcn = ifelse(is.na(lcn) | lcn == 0, 0, lcn)
+      n_alleles = tcn - lcn
+      gene_summary_out$cna_AI[i] = paste0('imbalanced')
+      gene_summary_out$cna_AI_n[i] = n_alleles
+    }
+  }
+  
+  gene_summary_out$allelic_call = NA
+  gene_summary_out$allelic_call = ifelse(is.na(gene_summary_out$tcn), 'check Facets fit', NA)
+
+  #---------------+
+  # subset clear cases
+  #---------------+
+  failed_samples = gene_summary_out[which(gene_summary_out$allelic_call == 'check Facets fit'), ]
+  
+  if(nrow(failed_samples) != 0){
+    gene_summary_out = gene_summary_out[!gene_summary_out$id %in% unique(failed_samples$id), ]
+    for(id in 1:nrow(gene_summary_out)){
+      if(gene_summary_out$filter[id] %in% cna_filter){
+        a_call = ifelse(gene_summary_out$cna_AI[id] == 'balanced' &
+                          gene_summary_out$cna_AI_n[id] %in% c(0,2,3) &
+                          gene_summary_out$mutation[id] == 'none', 'wildtype',
+                        ifelse(gene_summary_out$cna_AI[id] == 'balanced' &
+                                 gene_summary_out$cna_AI_n[id] %in% c(0,2,3) &
+                                 gene_summary_out$mutation[id] != 'none', 'monoallelic',
+                               ifelse(gene_summary_out$cna_AI[id] == 'imbalanced' &
+                                        gene_summary_out$cna_AI_n[id] == 0, 'biallelic',
+                                      ifelse(gene_summary_out$cna_AI[id] == 'imbalanced' &
+                                               gene_summary_out$cna_AI_n[id] == 1 &
+                                               gene_summary_out$mutation[id] == 'none', 'monoallelic',
+                                             ifelse(gene_summary_out$cna_AI[id] == 'imbalanced' &
+                                                      gene_summary_out$cna_AI_n[id] == 1 &
+                                                      gene_summary_out$mutation[id] != 'none', 'biallelic',
+                                                    ifelse(gene_summary_out$cna_AI[id] == 'imbalanced' &
+                                                             gene_summary_out$cna_AI_n[id] > 1 &
+                                                             gene_summary_out$mutation[id] == 'none', 'monoallelic',
+                                                           ifelse(gene_summary_out$cna_AI[id] == 'imbalanced' &
+                                                                    gene_summary_out$cna_AI_n[id] > 1 &
+                                                                    gene_summary_out$mutation[id] != 'none', 'check: expected_alt_copies', NA)))))))
+        
+        gene_summary_out$allelic_call[id] = a_call
+      } else {
+        gene_summary_out$allelic_call[id] = 'ambiguous:FacetsFilter'
+      }
+    }
+    gene_summary_out = rbind(gene_summary_out, failed_samples)
+    return(gene_summary_out)
+  } else {
+    for(id in 1:nrow(gene_summary_out)){
+      if(gene_summary_out$filter[id] %in% cna_filter){
+        a_call = ifelse(gene_summary_out$cna_AI[id] == 'balanced' &
+                          gene_summary_out$cna_AI_n[id] %in% c(0,2,3) &
+                          gene_summary_out$mutation[id] == 'none', 'wildtype',
+                        ifelse(gene_summary_out$cna_AI[id] == 'balanced' &
+                                 gene_summary_out$cna_AI_n[id] %in% c(0,2,3) &
+                                 gene_summary_out$mutation[id] != 'none', 'monoallelic',
+                               ifelse(gene_summary_out$cna_AI[id] == 'imbalanced' &
+                                        gene_summary_out$cna_AI_n[id] == 0, 'biallelic',
+                                      ifelse(gene_summary_out$cna_AI[id] == 'imbalanced' &
+                                               gene_summary_out$cna_AI_n[id] == 1 &
+                                               gene_summary_out$mutation[id] == 'none', 'monoallelic',
+                                             ifelse(gene_summary_out$cna_AI[id] == 'imbalanced' &
+                                                      gene_summary_out$cna_AI_n[id] == 1 &
+                                                      gene_summary_out$mutation[id] != 'none', 'biallelic',
+                                                    ifelse(gene_summary_out$cna_AI[id] == 'imbalanced' &
+                                                             gene_summary_out$cna_AI_n[id] > 1 &
+                                                             gene_summary_out$mutation[id] == 'none', 'monoallelic',
+                                                           ifelse(gene_summary_out$cna_AI[id] == 'imbalanced' &
+                                                                    gene_summary_out$cna_AI_n[id] > 1 &
+                                                                    gene_summary_out$mutation[id] != 'none', 'check: expected_alt_copies', NA)))))))
+        
+        gene_summary_out$allelic_call[id] = a_call
+        
+      } else {
+        gene_summary_out$allelic_call[id] = 'ambiguous:FacetsFilter'
+      }
+    }
+    return(gene_summary_out)
+  }
 }
 
-View(gene_summary_out)
-x = allelic_status(samples = sa, copy_number_data = cna_facets, mutation_data = mutation_maf, gene = 'B2M')
 
-cna_filter = c("PASS", 'RESCUE')
-gene_summary_out = x[,1:10]
-gene_summary_out = gene_summary_out[order(gene_summary_out$tcn, decreasing = T), ]
-gene_summary_out$allelic_call = NA
-
-
-
-#' allelic-status out
+#' out
