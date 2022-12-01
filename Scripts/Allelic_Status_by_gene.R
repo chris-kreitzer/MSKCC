@@ -6,6 +6,10 @@
 ## start: 11/08/2022
 ## revision: 11/10/2022
 ## chris-kreitzer
+##
+## bug report to: kreitzec@mskcc.org
+
+
 
 allelic_status = function(samples = NULL,
                           gene = NULL,
