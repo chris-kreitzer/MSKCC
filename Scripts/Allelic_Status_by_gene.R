@@ -15,12 +15,13 @@ allelic_status = function(samples = NULL,
                           gene = NULL,
                           copy_number_data = NULL,
                           mutation_data = NULL,
-                          cna_filter = c('PASS', 'RESCUE')){
+                          cna_filter = c('PASS', 'RESCUE'),
+                          print_progress = NULL){
   
   message('\nPlease provide samples as characters (e.g. c(, , ))\n
           Please provide gene as single string (e.g. TP53)\n
           Please provide mutation in OncoKB-annotated format\n
-          Please provide CNAs from Facets and at the GENE-LEVEL')
+          Please provide CNAs from Facets GENE-LEVEL calls')
   
   gene_summary_out = data.frame()
   samples = as.character(samples)
@@ -48,6 +49,7 @@ allelic_status = function(samples = NULL,
   #---------------+
   for(i in unique(samples)){
     try({
+      if(!is.null(print_progress)){ print(i) }
       if(i %in% mutation_goi$Tumor_Sample_Barcode){
         muts = mutation_goi[which(mutation_goi$Tumor_Sample_Barcode == i), ]
         
