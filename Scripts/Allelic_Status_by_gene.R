@@ -49,7 +49,6 @@ allelic_status = function(samples = NULL,
   #---------------+
   for(i in unique(samples)){
     try({
-      if(!is.null(print_progress)){ print(i) }
       if(i %in% mutation_goi$Tumor_Sample_Barcode){
         muts = mutation_goi[which(mutation_goi$Tumor_Sample_Barcode == i), ]
         
