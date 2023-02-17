@@ -1,4 +1,4 @@
-## Miscellaneous scripts, processing pipelines and analysis steps for colleagues
+## Miscellaneous scripts, processing pipelines and analysis steps
 
 #### annotate-maf-wrapper.R
 example script, where annotate-maf-wrapper.R is located in `${HOME}`   
