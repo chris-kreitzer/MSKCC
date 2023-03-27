@@ -164,4 +164,5 @@ HATCHET: https://www.nature.com/articles/s41467-020-17967-y.pdf
 IT-HelpDesk: The spot:
 https://thespot.mskcc.org/esc?id=esc_sc_category&catalog_id=e0d08b13c3330100c8b837659bba8fb4    
 https://thespot.mskcc.org/esc?id=esc_dashboard  
+Trainingscollection: https://meetmsk.zoom.us/rec/play/0ZBYhcQzOhoM39R9Fn6BSQ4sOktgdEsBQt0knGyUo_ijPk2XkKuNXzqp98ESlkb6XAZlkrzWwHQmyRyM.CsCUJ8j8-9E6zRsB?continueMode=true&_x_zm_rtaid=hJ4IaYkNSo6JYO-_dy6I0w.1679942955256.32c9409a922cea220bcbce2e2f0be7ce&_x_zm_rhtaid=711
 
