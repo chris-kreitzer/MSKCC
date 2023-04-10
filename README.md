@@ -167,5 +167,7 @@ https://thespot.mskcc.org/esc?id=esc_dashboard
 Trainingscollection: https://meetmsk.zoom.us/rec/play/0ZBYhcQzOhoM39R9Fn6BSQ4sOktgdEsBQt0knGyUo_ijPk2XkKuNXzqp98ESlkb6XAZlkrzWwHQmyRyM.CsCUJ8j8-9E6zRsB?continueMode=true&_x_zm_rtaid=hJ4IaYkNSo6JYO-_dy6I0w.1679942955256.32c9409a922cea220bcbce2e2f0be7ce&_x_zm_rhtaid=711    
 
 AACR poster Subhi    
-short update
+short update  
+  
+CNA meeting Niki
 
