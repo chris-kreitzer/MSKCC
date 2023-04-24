@@ -168,5 +168,7 @@ Trainingscollection: https://meetmsk.zoom.us/rec/play/0ZBYhcQzOhoM39R9Fn6BSQ4sOk
 
 AACR poster Subhi    
   
-CNA meeting Niki
+CNA meeting Niki   
+
+Mixtools for Gaussian mixture model!
 
