@@ -168,5 +168,8 @@ Trainingscollection: https://meetmsk.zoom.us/rec/play/0ZBYhcQzOhoM39R9Fn6BSQ4sOk
 
 CNA meeting Niki   
 
-Mixtools for Gaussian mixture model!
+Mixtools for Gaussian mixture model!  
+
+
+CNA meeting Henry
 
