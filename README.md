@@ -175,5 +175,8 @@ Mixtools for Gaussian mixture model!
 CNA meeting Henry  
 
 
-Following the rationale
+Following the rationale  
+  
+  
+and keep smiling :)
 
