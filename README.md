@@ -169,7 +169,8 @@ Trainingscollection: https://meetmsk.zoom.us/rec/play/0ZBYhcQzOhoM39R9Fn6BSQ4sOk
 one-two step change - based on DipLogR  --
   
   one step: change to heterozygous loss (deviation)
-  two step: change to heterozygous loss (deviation) to full loss; 
+  two step: change to heterozygous loss (deviation) to full loss;   
+  update from Subhi
   
     
 
