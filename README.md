@@ -171,6 +171,7 @@ one-two step change - based on DipLogR  --
   one step: change to heterozygous loss (deviation)
   two step: change to heterozygous loss (deviation) to full loss; 
   no real change!  
+  Chat with Rose Brannon / Allison Richardson
   
   
   csv/tsv - excel export! Caution
