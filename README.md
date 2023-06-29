@@ -173,8 +173,4 @@ one-two step change - based on DipLogR  --
   no real change!  
   Chat with Rose Brannon / Allison Richardson - intragenic changes / CNAs
 
-  Rose/Code - intragenic CNA alterations   
-
-
-  HOPLA re-upload work!
-
+  Rose/Code - intragenic CNA alterations  
