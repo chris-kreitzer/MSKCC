@@ -172,5 +172,3 @@ one-two step change - based on DipLogR  --
   two step: change to heterozygous loss (deviation) to full loss; 
   no real change!  
   Chat with Rose Brannon / Allison Richardson - intragenic changes / CNAs
-
-  Rose/Code - intragenic CNA alterations  
